@@ -1,20 +1,26 @@
 import os
+import sys
 import asyncio
-from logging.config import fileConfig
 
+from logging.config import fileConfig
+from alembic import context
+from dotenv import load_dotenv
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from alembic import context
-from dotenv import load_dotenv
 
-from scr.core.base import Base
+sys.path.append(os.path.join(sys.path[0], 'src'))
+
+from base import Base
+
+
 
 load_dotenv('.env')
 
 config = context.config
 
 config.set_main_option('sqlalchemy.url', os.environ.get('DB_URL'))
+# config.set_main_option('prepend_sys_path', './src')
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
