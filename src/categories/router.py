@@ -5,7 +5,7 @@ from categories.shemas import (CategoryDB, CategoryCreate,
                                CategoryUpdate)
 from categories.crud import category_crud
 from core.db import get_async_session
-
+from categories.utils import is_exist_code_or_name, is_exist_id
 
 category_router = APIRouter()
 
@@ -52,7 +52,13 @@ async def create_category(
     '''
     Эндпоинт для создания категории
     '''
-    pass
+    await is_exist_code_or_name(
+        category_data.code,
+        category_data.title,
+        session,
+    )
+    category = await category_crud.create(category_data, session)
+    return category
 
 
 @category_router.patch(
@@ -68,4 +74,4 @@ async def update_category(
     '''
     Эндпоинт для обновления категории
     '''
-    pass
+    await is_exist_id(category_id, session)
