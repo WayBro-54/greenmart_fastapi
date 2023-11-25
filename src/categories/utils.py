@@ -52,7 +52,7 @@ async def is_exist_code_or_name_update(
         )
 
 
-async def is_exist_or_404(
+async def get_object_or_404(
         id_categories: int,
         session: AsyncSession
 ):

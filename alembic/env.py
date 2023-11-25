@@ -14,7 +14,6 @@ sys.path.append(os.path.join(sys.path[0], 'src'))
 from base import Base
 
 
-
 load_dotenv('.env')
 
 config = context.config

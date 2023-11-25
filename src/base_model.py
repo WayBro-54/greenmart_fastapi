@@ -10,5 +10,5 @@ class NonNegativeInteger(types.TypeDecorator):
 
     def process_bind_param(self, value: Optional[_T], dialect: Dialect) -> None:
         if value is not None and value < 0:
-            raise ValueError(f'Число должно быть положительным {value}')
+            raise ValueError(f'Число [{value}], должно быть положительным')
         return value

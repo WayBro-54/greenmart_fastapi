@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.encoders import jsonable_encoder
 
 from core.crud import CRUDBase
-from categories.models import Categories
+from base import Categories
 
 
 class CategoriesCRUD(CRUDBase):

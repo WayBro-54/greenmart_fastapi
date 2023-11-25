@@ -1,6 +1,22 @@
-from sqlalchemy import String, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, ForeignKey, Table, Column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db import Base
+
+
+CategoriesProduct = Table(
+    'CategoriesProduct',
+    Base.metadata,
+    Column(
+        'product',
+        ForeignKey('product.id'),
+        primary_key=True,
+    ),
+    Column(
+        'categories',
+        ForeignKey('categories.id'),
+        primary_key=True,
+    ),
+)
 
 
 class Categories(Base):
@@ -17,3 +33,7 @@ class Categories(Base):
         unique=True,
     )
     description: Mapped[str]
+    products: Mapped[list['Product']] = relationship(
+        secondary=CategoriesProduct,
+        back_populates='categories'
+    )

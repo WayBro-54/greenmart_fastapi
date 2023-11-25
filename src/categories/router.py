@@ -7,7 +7,7 @@ from categories.crud import category_crud
 from core.db import get_async_session
 from categories.utils import (is_exist_code_or_name,
                               is_exist_code_or_name_update,
-                              is_exist_or_404)
+                              get_object_or_404)
 
 category_router = APIRouter()
 
@@ -42,6 +42,7 @@ async def get_all_category(
     all_category = await category_crud.get_all(session)
     return all_category
 
+
 @category_router.post(
     '/',
     response_model=CategoryDB,
@@ -64,7 +65,7 @@ async def create_category(
 
 
 @category_router.patch(
-    '/{category_id}',
+    '/{category_id}/update',
     response_model=CategoryDB,
     response_model_exclude_none=True,
 )
@@ -76,7 +77,7 @@ async def update_category(
     '''
     Эндпоинт для обновления категории
     '''
-    db_category = await is_exist_or_404(category_id, session,)
+    db_category = await get_object_or_404(category_id, session,)
     await is_exist_code_or_name_update(
         category_id,
         categories_in.code,
@@ -89,3 +90,16 @@ async def update_category(
         session,
     )
     return upd_categories
+
+@category_router.delete(
+    '{id_category}/delete',
+    response_model=CategoryDB,
+    response_model_exclude_none=True,
+)
+async def delete_category(
+        category_id,
+        session: AsyncSession = Depends(get_async_session)
+):
+    obj = await get_object_or_404(category_id, session)
+    rm_obj = await category_crud.remove(obj, session)
+    return rm_obj
