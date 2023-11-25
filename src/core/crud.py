@@ -61,7 +61,6 @@ class CRUDBase:
         await session.refresh(obj_db)
         return obj_db
 
-
     async def remove(
           self,
           obj_db,
