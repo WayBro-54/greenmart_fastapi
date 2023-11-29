@@ -16,14 +16,12 @@ category_router = APIRouter()
     '/{category_id}',
     response_model=CategoryDB,
     response_model_exclude_none=True,
+    description='Получение данных о категории'
 )
 async def get_category(
     category_id: int,
     session: AsyncSession = Depends(get_async_session),
 ):
-    '''
-    Эндпоинт для просмотра категории
-    '''
     category = await category_crud.get(category_id, session)
     return category
 
@@ -32,13 +30,11 @@ async def get_category(
     '/',
     response_model=list[CategoryDB],
     response_model_exclude_none=True,
+    description='Получение данных о всех категориях',
 )
 async def get_all_category(
         session: AsyncSession = Depends(get_async_session)
 ):
-    '''
-    Эндпоинт для просмотра всех категорий
-    '''
     all_category = await category_crud.get_all(session)
     return all_category
 
@@ -47,14 +43,13 @@ async def get_all_category(
     '/',
     response_model=CategoryDB,
     response_model_exclude_none=True,
+    description='Создание новой категории',
 )
 async def create_category(
         category_data: CategoryCreate,
         session: AsyncSession = Depends(get_async_session)
 ):
-    '''
-    Эндпоинт для создания категории
-    '''
+    print(category_data)
     await is_exist_code_or_name(
         category_data.code,
         category_data.title,
@@ -68,6 +63,7 @@ async def create_category(
     '/{category_id}/update',
     response_model=CategoryDB,
     response_model_exclude_none=True,
+    description='Обновление данных категории',
 )
 async def update_category(
         category_id: int,
@@ -91,10 +87,12 @@ async def update_category(
     )
     return upd_categories
 
+
 @category_router.delete(
     '{id_category}/delete',
     response_model=CategoryDB,
     response_model_exclude_none=True,
+    description='Удаление категории',
 )
 async def delete_category(
         category_id,

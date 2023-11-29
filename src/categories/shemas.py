@@ -1,5 +1,13 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, Field
+
+
+class Product(BaseModel):
+    id: int
+    title: str
+    code: int
+    description: Optional[str]
+    country: Optional[str]
 
 
 class CategoryItem(BaseModel):
@@ -25,5 +33,4 @@ class CategoryDB(BaseModel):
     id: int
     code: str
     title: str
-    description: Optional[str]
-
+    description: Optional[str] = Field(None)
