@@ -4,32 +4,17 @@ from sqlalchemy import String, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db import Base
 
+
 # Промежуточная таблица между Product и Categories
-CategoriesProduct = Table(
-    'CategoriesProduct',
-    Base.metadata,
-    Column(
-        'product_id',
-        ForeignKey('product.id'),
-        primary_key=True,
-        # nullable=True,
-        # null=True,
-    ),
-    Column(
-        'categories_id',
-        ForeignKey('categories.id'),
-        primary_key=True,
-        # nullable=True,
-        # null=True,
-    ),
-)
+class CategoriesProduct(Base):
+    category_id: Mapped[int] = mapped_column(ForeignKey('categories.id'), primary_key=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey('product.id'), primary_key=True)
 
 
 class Categories(Base):
     ''' Таблица с категориями '''
     id: Mapped[int] = mapped_column(
         primary_key=True,
-        autoincrement=True,
     )
     code: Mapped[str] = mapped_column(
         String(30),
@@ -43,6 +28,7 @@ class Categories(Base):
     products: Mapped[
         Optional[list['Product']]
     ] = relationship(
-        secondary=CategoriesProduct,
+        secondary=CategoriesProduct.__table__,
         back_populates='categories',
+        lazy='selectin'
     )

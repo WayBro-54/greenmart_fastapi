@@ -1,17 +1,21 @@
-from typing import Optional
+from typing import Optional, Any
 from pydantic import BaseModel, Field
-
 
 
 class ProductCategory(BaseModel):
     id: Optional[int] = Field(None)
-    title: Optional[str] = Field(None)
-    code: Optional[str] = Field(None)
+    # title: Optional[str] = Field(None)
+    # code: Optional[str] = Field(None)
+    # class Config:
+    #     orm_mode = True
 
 
 class ProductBase(BaseModel):
-    title: str = Field(None)
-    code: int = Field(None)
+    title: Optional[str] = Field(None)
+    code: Optional[int] = Field(None)
+
+    # class Config:
+    #     orm_mode = True
 
 
 class ProductItem(ProductBase):
@@ -44,10 +48,16 @@ class ProductUpdate(ProductBase):
     count: int
 
 
-class ProductDB(ProductBase):
-    id: int = Field(None)
-    description: Optional[str] = Field(None)
-    country: Optional[str] = Field(None)
-    count: int = Field(None)
+class ProductDB(BaseModel):
+    id: Optional[int] = Field(None)
+    title: Optional[str] = Field(None)
+    code: Optional[int] = Field(None)
+    # description: Optional[str] = Field(None)
+    # country: Optional[str] = Field(None)
+    # count: Optional[int] = Field(None)
 
 
+class ProductResponseModel(BaseModel):
+    id: Any
+    title: Any
+    code: Any

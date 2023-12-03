@@ -1,8 +1,9 @@
+from typing import Union
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db import get_async_session
-from product.shemas import ProductDB, ProductCreate, ProductUpdate
+from product.shemas import ProductDB, ProductCreate, ProductUpdate, ProductResponseModel
 from product.crud import product_crud
 
 
@@ -38,7 +39,7 @@ async def get_product_all(
 
 @product_router.post(
     '/',
-    response_model=ProductDB,
+    response_model=ProductResponseModel,
     response_model_exclude_none=True,
     description='Добавление продукта',
 )
@@ -47,6 +48,7 @@ async def product_create(
         session: AsyncSession = Depends(get_async_session)
 ):
     product = await product_crud.create_list_category(obj_in, session)
+    print(product)
     return product
 
 

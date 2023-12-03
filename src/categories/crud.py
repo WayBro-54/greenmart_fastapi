@@ -1,4 +1,5 @@
 from sqlalchemy import select, and_
+from sqlalchemy.orm import noload
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.encoders import jsonable_encoder
 
@@ -70,6 +71,12 @@ class CategoriesCRUD(CRUDBase):
         )
         db_categories_id = db_categories_id.scalars().first()
         return db_categories_id
+
+    async def get_categories_id_code_title(self, id_category: int, session: AsyncSession):
+        result = await session.execute(
+            select(self.model).where(self.model.id == id_category).options(noload(self.model.products))
+        )
+        return result.scalar_one_or_none()
 
 
 category_crud = CategoriesCRUD(Categories)

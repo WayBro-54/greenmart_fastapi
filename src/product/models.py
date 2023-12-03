@@ -18,7 +18,7 @@ class Product(Base):
     )
     code: Mapped[int] = mapped_column(unique=True)
     categories: Mapped[Optional[list['Categories']]] = relationship(
-        secondary=CategoriesProduct,
+        secondary=CategoriesProduct.__table__,
         back_populates='products',
     )
     description: Mapped[Optional[str]]
