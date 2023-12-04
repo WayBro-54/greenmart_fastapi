@@ -1,10 +1,10 @@
 from typing import Optional
-from sqlalchemy import String, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import String
+from sqlalchemy.orm import (Mapped, mapped_column, relationship,
+                            validates)
 
 from base import Categories, CategoriesProduct
 from core.db import Base
-from base_model import NonNegativeInteger
 
 
 class Product(Base):
@@ -24,3 +24,12 @@ class Product(Base):
     description: Mapped[Optional[str]]
     country: Mapped[Optional[str]] = mapped_column(String(255))
     count: Mapped[Optional[int]]
+    is_deleted: Mapped[int] = mapped_column(
+        default=False,
+    )
+
+    @validates('is_deleted')
+    def validate_is_deleted(self, key, value):
+        if value not in [0, 1]:
+            raise ValueError(f'is_deleted принимает 0 или 1! value: [{value}]')
+        return value

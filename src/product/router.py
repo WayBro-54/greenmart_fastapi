@@ -39,7 +39,7 @@ async def get_product_all(
 
 @product_router.post(
     '/',
-    response_model=ProductResponseModel,
+    response_model=ProductDB,
     response_model_exclude_none=True,
     description='Добавление продукта',
 )

@@ -1,21 +1,25 @@
 from typing import Optional, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class ProductCategory(BaseModel):
     id: Optional[int] = Field(None)
-    # title: Optional[str] = Field(None)
-    # code: Optional[str] = Field(None)
-    # class Config:
-    #     orm_mode = True
+    title: Optional[str] = Field(None)
+    code: Optional[str] = Field(None)
 
 
 class ProductBase(BaseModel):
     title: Optional[str] = Field(None)
     code: Optional[int] = Field(None)
+    is_deleted: Optional[int] = Field(
+        0,
+        gt=0,
+        lt=1,
+    )
 
-    # class Config:
-    #     orm_mode = True
+    def validator_is_deleted(self):
+        pass
+
 
 
 class ProductItem(ProductBase):
@@ -43,7 +47,7 @@ class ProductCreate(ProductBase):
 
 class ProductUpdate(ProductBase):
     description: Optional[str]
-    # categories: list[ProductCategory]
+    categories: Optional[list[ProductCategory]]
     country: Optional[str]
     count: int
 
@@ -52,9 +56,7 @@ class ProductDB(BaseModel):
     id: Optional[int] = Field(None)
     title: Optional[str] = Field(None)
     code: Optional[int] = Field(None)
-    # description: Optional[str] = Field(None)
-    # country: Optional[str] = Field(None)
-    # count: Optional[int] = Field(None)
+    # categories: Optional[list[ProductCategory]]
 
 
 class ProductResponseModel(BaseModel):

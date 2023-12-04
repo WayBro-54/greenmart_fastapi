@@ -1,43 +1,48 @@
-from fastapi.encoders import jsonable_encoder
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, insert
-from sqlalchemy.orm import noload
+from sqlalchemy.orm import selectinload
 
-from core.crud import CRUDBase
 from product.models import Product
-from categories.crud import category_crud
+from core.crud import CRUDBase
 
-GET_CATEGORY = {
-        'id': category_crud.get,
-        'title': category_crud.get_categories_id_by_title,
-        'code': category_crud.get_categories_id_by_code,
-    }
+if TYPE_CHECKING:
+    from categories.models import CategoriesProduct
 
 
 class ProductCrud(CRUDBase):
 
     async def create_list_category(
-        self,
-        obj_in,
-        session: AsyncSession
+            self,
+            obj_in,
+            session: AsyncSession
     ):
         obj_in_data = obj_in.dict()
         categories = obj_in_data.pop('categories')
         db_obj = self.model(**obj_in_data)
+
+        # Создаем новый объект модели Product
         session.add(db_obj)
+        await session.flush()
+        await session.refresh(db_obj)
 
+        # Используем bulk insert для создания связи  many to namy
+        # для модели CategoriesProduct
+
+        db_obj_id = db_obj.id
+        data = [{'product_id': db_obj_id,
+                 'category_id': cat['id']} for cat in categories]
+        await session.execute(insert(CategoriesProduct), data)
         await session.commit()
-        await session.refresh(db_obj, ['categories'])
 
-        for category in categories:
-            id_category = await category_crud.get_categories_id_code_title(
-                category['id'],
-                session
+        # получаем объект повторно, подгрузив категории
+        obj = await session.execute(
+            select(Product).where(Product.id == db_obj_id).options(
+                selectinload(Product.categories)
             )
-            db_obj.categories.append(id_category)
-
-        await session.commit()
-        return db_obj
+        )
+        return obj.scalar()
 
 
 product_crud = ProductCrud(Product)

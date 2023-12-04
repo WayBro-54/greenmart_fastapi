@@ -1,7 +1,6 @@
 from sqlalchemy import select, and_
 from sqlalchemy.orm import noload
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.encoders import jsonable_encoder
 
 from core.crud import CRUDBase
 from base import Categories
@@ -48,7 +47,7 @@ class CategoriesCRUD(CRUDBase):
                     self.model.code == code,
                     self.model.id != id_category
                 )
-        )
+            )
         )
         db_categories_id = db_categories_id.scalars().first()
         return db_categories_id
