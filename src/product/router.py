@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db import get_async_session
-from product.shemas import ProductDB, ProductCreate, ProductUpdate, ProductResponseModel
+from product.shemas import ProductDB, ProductCreate, ProductUpdate
 from product.crud import product_crud
 
 
@@ -28,12 +28,12 @@ async def get_product(
     '/',
     response_model=list[ProductDB],
     response_model_exclude_none=True,
-    description='Просмотр всех продуктов',
+    description='Просмотр всех продуктов, не удаленных продуктов',
 )
 async def get_product_all(
         session: AsyncSession = Depends(get_async_session)
 ):
-    product_list = await product_crud.get_all(session)
+    product_list = await product_crud.get_all_products(session)
     return product_list
 
 
@@ -53,7 +53,7 @@ async def product_create(
 
 
 @product_router.patch(
-    '/{product_id}',
+    '/{product_id}/update',
     response_model=ProductDB,
     response_model_exclude_none=True,
     description='Изменение продукта',
@@ -62,8 +62,8 @@ async def product_update(
         obj_in: ProductUpdate,
         session: AsyncSession = Depends(get_async_session)
 ):
+    # obj_db = await product_crud.
     pass
-
 
 @product_router.delete(
     '/{product_id}',

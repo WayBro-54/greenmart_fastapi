@@ -25,11 +25,11 @@ class Product(Base):
     country: Mapped[Optional[str]] = mapped_column(String(255))
     count: Mapped[Optional[int]]
     is_deleted: Mapped[int] = mapped_column(
-        default=False,
+        default=0,
     )
 
     @validates('is_deleted')
     def validate_is_deleted(self, key, value):
         if value not in [0, 1]:
-            raise ValueError(f'is_deleted принимает 0 или 1! value: [{value}]')
+            raise ValueError(f'is_deleted принимает 0 или 1. value: [{value}]')
         return value

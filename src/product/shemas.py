@@ -1,65 +1,68 @@
-from typing import Optional, Any
-from pydantic import BaseModel, Field, validator
+from typing import Optional
+from pydantic import BaseModel, Field, field_validator
+
 
 
 class ProductCategory(BaseModel):
     id: Optional[int] = Field(None)
     title: Optional[str] = Field(None)
     code: Optional[str] = Field(None)
+    # @field_validator()
+    # @classmethod
+    # def validate(cls: type[Model], value: Any) -> Model:
 
 
 class ProductBase(BaseModel):
     title: Optional[str] = Field(None)
     code: Optional[int] = Field(None)
-    is_deleted: Optional[int] = Field(
-        0,
-        gt=0,
-        lt=1,
-    )
-
-    def validator_is_deleted(self):
-        pass
-
+    description: Optional[str]
+    count: int
+    @field_validator('code')
+    @classmethod
+    def validate_code(cls, value):
+        if not isinstance(value, int):
+            raise ValueError(f'Code - целочисленное значение. code: [{value}]')
+        return value
 
 
 class ProductItem(ProductBase):
     id: int
-    description: Optional[str]
     country: Optional[str]
-    count: int
+    is_deleted: Optional[int] = Field(
+        0,
+        ge=0,
+        le=1,
+    )
 
 
 class ProductList(ProductBase):
     id: int
-    description: Optional[str]
     country: Optional[str]
-    count: int
+    is_deleted: Optional[int] = Field(
+        0,
+        ge=0,
+        le=1,
+    )
 
 
 class ProductCreate(ProductBase):
-    description: Optional[str] = Field(None)
     country: Optional[str] = Field(None)
-    count: Optional[int] = Field(None)
     categories: Optional[list[ProductCategory]] = Field(
         default_factory=list
     )
 
 
 class ProductUpdate(ProductBase):
-    description: Optional[str]
     categories: Optional[list[ProductCategory]]
     country: Optional[str]
-    count: int
 
 
 class ProductDB(BaseModel):
     id: Optional[int] = Field(None)
-    title: Optional[str] = Field(None)
-    code: Optional[int] = Field(None)
-    # categories: Optional[list[ProductCategory]]
-
-
-class ProductResponseModel(BaseModel):
-    id: Any
-    title: Any
-    code: Any
+    country: Optional[str]
+    is_deleted: Optional[int] = Field(
+        0,
+        ge=0,
+        le=1,
+    )
+    categories: Optional[list[ProductCategory]]
