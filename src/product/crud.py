@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, delete
 from sqlalchemy.orm import selectinload, noload
 
 from product.models import Product
@@ -82,8 +82,8 @@ class ProductCrud(CRUDBase):
         obj_db_data = jsonable_encoder(obj_db)
 
         category_in_data = obj_in_data.pop('categories')
-        category_db_data = obj_db_data.pop('categories')
-
+        # category_db_data = obj_db_data.pop('categories')
+        db_obj_id = obj_db_data.id
         for field in obj_db_data:
             if field in obj_in_data:
                 setattr(obj_db_data, field, obj_in_data[field])
@@ -92,26 +92,10 @@ class ProductCrud(CRUDBase):
         await session.commit()
         await session.refresh(obj_db_data)
 
-        db_obj_up = (await session.execute(
-            select(Product).where(
-                Product.id == obj_db_data['id']
-            ).options(
-                selectinload(Product.categories)
-            )
-        )).scalar()
+        await session.execute(
+            delete(CategoriesProduct).where(CategoriesProduct.product_id == obj_db_data['id'])
+        )
 
-
-        # Удаление
-        for category in category_db_data:
-            query = select(Categories).where(
-                Categories.title == category['title']
-            ).options(
-                noload(Categories.products)
-            )
-            category = (await session.execute(query)).scalar()
-            db_obj_up.categories.remove(category)
-
-        db_obj_id = db_obj_up.id
         data = [{'product_id': db_obj_id,
                  'category_id': cat['id']} for cat in category_in_data]
 
@@ -125,5 +109,6 @@ class ProductCrud(CRUDBase):
             )
         )
         return obj.scalar()
+
 
 product_crud = ProductCrud(Product)

@@ -34,5 +34,4 @@ class Categories(Base):
     ] = relationship(
         secondary=CategoriesProduct.__table__,
         back_populates='categories',
-        lazy='selectin'
     )

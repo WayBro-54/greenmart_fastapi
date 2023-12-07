@@ -1,11 +1,13 @@
-from typing import Optional
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
 from sqlalchemy import String
 from sqlalchemy.orm import (Mapped, mapped_column, relationship,
                             validates)
-
-from base import Categories, CategoriesProduct
 from core.db import Base
 
+if TYPE_CHECKING:
+    from base import (Categories, Orders, OrdersProduct)
+    from categories.models import CategoriesProduct
 
 class Product(Base):
     '''Таблица с продутов.'''
@@ -17,15 +19,19 @@ class Product(Base):
         String(250),
     )
     code: Mapped[int] = mapped_column(unique=True)
-    categories: Mapped[Optional[list['Categories']]] = relationship(
-        secondary=CategoriesProduct.__table__,
-        back_populates='products',
-    )
     description: Mapped[Optional[str]]
     country: Mapped[Optional[str]] = mapped_column(String(255))
     count: Mapped[Optional[int]]
     is_deleted: Mapped[int] = mapped_column(
         default=0,
+    )
+    categories: Mapped[Optional[list['Categories']]] = relationship(
+        secondary='CategoriesProduct.__table__',
+        back_populates='products',
+    )
+    orders: Mapped[Optional[list[Orders]]] = relationship(
+        secondary='OrdersProduct.__table__',
+        back_populates='products',
     )
 
     @validates('is_deleted')
