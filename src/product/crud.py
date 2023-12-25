@@ -48,6 +48,7 @@ class ProductCrud(CRUDBase):
     ):
         obj_in_data = obj_in.dict()
         categories = obj_in_data.pop('categories')
+        print(obj_in_data)
         db_obj = self.model(**obj_in_data)
 
         # Создаем новый объект модели Product

@@ -1,12 +1,8 @@
-from typing import TYPE_CHECKING
 from typing import Optional
-from sqlalchemy import types
-from sqlalchemy import String, ForeignKey, Table, Column
+from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db import Base
 
-if TYPE_CHECKING:
-    from product.models import Product
 
 
 # Промежуточная таблица между Product и Categories

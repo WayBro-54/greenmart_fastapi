@@ -1,13 +1,14 @@
 from __future__ import annotations
+from datetime import datetime
 from typing import Optional, TYPE_CHECKING
-from sqlalchemy import String
+from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import (Mapped, mapped_column, relationship,
                             validates)
 from core.db import Base
 
 if TYPE_CHECKING:
-    from base import (Categories, Orders, OrdersProduct)
-    from categories.models import CategoriesProduct
+    from base import (Categories, Orders)
+
 
 class Product(Base):
     '''Таблица с продутов.'''
@@ -39,3 +40,14 @@ class Product(Base):
         if value not in [0, 1]:
             raise ValueError(f'is_deleted принимает 0 или 1. value: [{value}]')
         return value
+
+
+class ProductPriceLog(Base):
+    __tablename__ = 'product_price_log'
+    last_price: Mapped[int]
+    product: Mapped[Product] = mapped_column(ForeignKey('product.id'), primary_key=True)
+    date_update: Mapped[datetime] = mapped_column(
+        default=datetime.now,
+        # server_default=datetime.now
+    )
+
