@@ -5,9 +5,8 @@ from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import (Mapped, mapped_column, relationship,
                             validates)
 from core.db import Base
-
-if TYPE_CHECKING:
-    from base import (Categories, Orders)
+from categories.models import CategoriesProduct
+from orders.models import OrdersProduct
 
 
 class Product(Base):
@@ -27,11 +26,11 @@ class Product(Base):
         default=0,
     )
     categories: Mapped[Optional[list['Categories']]] = relationship(
-        secondary='CategoriesProduct.__table__',
+        secondary=CategoriesProduct.__table__,
         back_populates='products',
     )
-    orders: Mapped[Optional[list[Orders]]] = relationship(
-        secondary='OrdersProduct.__table__',
+    orders: Mapped[Optional[list['Orders']]] = relationship(
+        secondary=OrdersProduct.__table__,
         back_populates='products',
     )
 
@@ -42,12 +41,12 @@ class Product(Base):
         return value
 
 
-class ProductPriceLog(Base):
-    __tablename__ = 'product_price_log'
-    last_price: Mapped[int]
-    product: Mapped[Product] = mapped_column(ForeignKey('product.id'), primary_key=True)
-    date_update: Mapped[datetime] = mapped_column(
-        default=datetime.now,
-        # server_default=datetime.now
-    )
+# class ProductPriceLog(Base):
+#     __tablename__ = 'product_price_log'
+#     last_price: Mapped[int]
+#     product: Mapped[Product] = mapped_column(ForeignKey('product.id'), primary_key=True)
+#     date_update: Mapped[datetime] = mapped_column(
+#         default=datetime.now,
+#         # server_default=datetime.now
+#     )
 

@@ -1,15 +1,11 @@
-from __future__ import annotations
-from typing import TYPE_CHECKING
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, insert, delete
-from sqlalchemy.orm import selectinload, noload
+from sqlalchemy.orm import selectinload
 
 from product.models import Product
 from core.crud import CRUDBase
-
-if TYPE_CHECKING:
-    from categories.models import CategoriesProduct, Categories
+from categories.models import CategoriesProduct
 
 
 class ProductCrud(CRUDBase):
