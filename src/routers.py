@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from categories.router import category_router
 from product.router import product_router
 from orders.router import order_router
-
+from users.router import user_router
 
 main_router = APIRouter()
 
@@ -22,4 +22,8 @@ main_router.include_router(
     order_router,
     prefix='/order',
     tags=['Order'],
+)
+
+main_router.include_router(
+    user_router
 )

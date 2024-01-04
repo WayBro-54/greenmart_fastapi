@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from categories.shemas import (CategoryDB, CategoryCreate,
                                CategoryUpdate)
 from categories.crud import category_crud
-from core.db import get_async_session
+from db import get_async_session
 from categories.utils import (is_exist_code_or_name,
                               is_exist_code_or_name_update,
                               get_object_or_404)

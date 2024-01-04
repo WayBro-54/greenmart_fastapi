@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
-from orders.shemas import CreateOrder, DBOrder
-from core.db import get_async_session
+from orders.shemas import CreateOrder
+from db import get_async_session
 from orders.crud import order_crud
 
 

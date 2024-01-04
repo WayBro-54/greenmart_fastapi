@@ -1,7 +1,6 @@
 from typing import Optional, Any
 
 from sqlalchemy import types, Dialect
-from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.type_api import _T
 
 

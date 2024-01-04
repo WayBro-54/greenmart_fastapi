@@ -1,7 +1,8 @@
 from typing import Dict, Any
+from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.orm import declarative_base, sessionmaker, declared_attr
-# from sqlalchemy
+from sqlalchemy.orm import declarative_base, declared_attr
+
 from config import settings
 
 
@@ -27,6 +28,8 @@ class PreBase:
 
 
 Base = declarative_base(cls=PreBase)
+
+metadata = MetaData()
 
 engine = create_async_engine(settings.db_url, echo=True, future=True)
 

@@ -1,10 +1,9 @@
 from __future__ import annotations
-from datetime import datetime
-from typing import Optional, TYPE_CHECKING
-from sqlalchemy import String, ForeignKey
+from typing import Optional
+from sqlalchemy import String
 from sqlalchemy.orm import (Mapped, mapped_column, relationship,
                             validates)
-from core.db import Base
+from db import Base
 from categories.models import CategoriesProduct
 from orders.models import OrdersProduct
 

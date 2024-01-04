@@ -1,8 +1,7 @@
-from typing import Union
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.db import get_async_session
+from db import get_async_session
 from product.shemas import ProductDB, ProductCreate, ProductUpdate
 from product.crud import product_crud
 

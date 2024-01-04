@@ -12,10 +12,11 @@ from fastapi_users.authentication import (
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.config import settings
-from core.db import get_async_session
-from users.models import User
+from db import get_async_session
+from config import settings
+from users.models import Users
 from users.shemas import UserCreate
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,7 +29,7 @@ logging.basicConfig(
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
-    yield SQLAlchemyUserDatabase(session, User)
+    yield SQLAlchemyUserDatabase(session, Users)
 
 
 bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
@@ -48,12 +49,12 @@ auth_backend = AuthenticationBackend(
 )
 
 
-class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
+class UserManager(IntegerIDMixin, BaseUserManager[Users, int]):
 
     async def validate_password(
         self,
         password: str,
-        user: Union[UserCreate, User],
+        user: Union[UserCreate, Users],
     ) -> None:
         if len(password) < 3:
             raise InvalidPasswordException(
@@ -65,7 +66,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
             )
 
     async def on_after_register(
-            self, user: User, request: Optional[Request] = None
+            self, user: Users, request: Optional[Request] = None
     ):
         # print(f'Пользователь {user.email} зарегистрирован.')
         logging.info(
@@ -76,7 +77,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
 
-fastapi_users = FastAPIUsers[User, int](
+fastapi_users = FastAPIUsers[Users, int](
     get_user_manager,
     [auth_backend],
 )
