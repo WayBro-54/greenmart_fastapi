@@ -1,5 +1,6 @@
 import uuid
 
+from pydantic import BaseModel
 from fastapi_users import schemas
 
 
@@ -12,4 +13,16 @@ class UserCreate(schemas.BaseUserCreate):
 
 
 class UserUpdate(schemas.BaseUserUpdate):
+    pass
+
+
+class AgentDB(BaseModel):
+    pass
+
+
+class AgentUpdate(BaseModel):
+    pass
+
+
+class AgentDelete(BaseModel):
     pass
