@@ -1,5 +1,7 @@
 import uuid
 
+from datetime import date
+from typing import Annotated
 from pydantic import BaseModel
 from fastapi_users import schemas
 
@@ -17,7 +19,21 @@ class UserUpdate(schemas.BaseUserUpdate):
 
 
 class AgentDB(BaseModel):
-    pass
+    firstname: str | None
+    lastname: str | None
+    surname: str | None
+    birthday: date | None
+    phone: str | None
+    address: str | None
+
+
+class AgentCreate(BaseModel):
+    firstname: str | None
+    lastname: str | None
+    surname: str | None
+    birthday: date | None
+    phone: str | None
+    address: str | None
 
 
 class AgentUpdate(BaseModel):

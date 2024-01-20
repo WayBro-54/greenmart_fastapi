@@ -7,6 +7,7 @@ from orders.crud import order_crud
 
 order_router = APIRouter()
 
+
 @order_router.post(
     '/',
     response_model_exclude_none=True,
