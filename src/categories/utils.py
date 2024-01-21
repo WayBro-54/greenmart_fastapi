@@ -1,8 +1,7 @@
-from http import HTTPStatus
-
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from categories.crud import category_crud
+from users.models import Users
 
 
 async def is_exist_code_or_name(
@@ -14,12 +13,12 @@ async def is_exist_code_or_name(
     is_title = await category_crud.get_categories_id_by_title(title, session)
     if is_code is not None:
         raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=f'Категория с кодом: [{code}], уже присутствует!'
         )
     if is_title is not None:
         raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=f'Категория с именем: [{title}], уже присутствует!'
         )
 
@@ -42,12 +41,12 @@ async def is_exist_code_or_name_update(
     )
     if is_code is not None:
         raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=f'Категория с кодом: [{code}], уже присутствует!'
         )
     if is_title is not None:
         raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=f'Категория с именем: [{title}], уже присутствует!'
         )
 
@@ -62,7 +61,18 @@ async def get_object_or_404(
     )
     if is_exist_db is None:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail=f'Записи с ID={id_categories}, не обнаружено!'
         )
     return is_exist_db
+
+
+async def is_superuser(
+        user: Users,
+):
+    if user.is_superuser:
+        return user
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail=f'{user.email}, is not superuser!',
+    )

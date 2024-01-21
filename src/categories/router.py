@@ -7,7 +7,9 @@ from categories.crud import category_crud
 from db import get_async_session
 from categories.utils import (is_exist_code_or_name,
                               is_exist_code_or_name_update,
-                              get_object_or_404)
+                              get_object_or_404, is_superuser)
+from users.models import Users
+from users.config import current_superuser
 
 category_router = APIRouter()
 
@@ -47,9 +49,10 @@ async def get_all_category(
 )
 async def create_category(
         category_data: CategoryCreate,
-        session: AsyncSession = Depends(get_async_session)
+        session: AsyncSession = Depends(get_async_session),
+        user: Users = Depends(current_superuser),
 ):
-    print(category_data)
+    await is_superuser(user)
     await is_exist_code_or_name(
         category_data.code,
         category_data.title,
@@ -69,10 +72,9 @@ async def update_category(
         category_id: int,
         categories_in: CategoryUpdate,
         session: AsyncSession = Depends(get_async_session),
+        user: Users = Depends(current_superuser),
 ):
-    '''
-    Эндпоинт для обновления категории
-    '''
+    await is_superuser(user)
     db_category = await get_object_or_404(category_id, session,)
     await is_exist_code_or_name_update(
         category_id,
@@ -95,9 +97,11 @@ async def update_category(
     description='Удаление категории',
 )
 async def delete_category(
-        category_id,
-        session: AsyncSession = Depends(get_async_session)
+    category_id,
+    session: AsyncSession = Depends(get_async_session),
+    user: Users = Depends(current_superuser),
 ):
+    await is_superuser(user)
     obj = await get_object_or_404(category_id, session)
     rm_obj = await category_crud.remove(obj, session)
     return rm_obj
