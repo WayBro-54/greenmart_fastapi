@@ -1,13 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-#
+
 from categories.shemas import (CategoryDB, CategoryCreate,
                                CategoryUpdate)
 from categories.crud import category_crud
+from categories.validators import category_validator
 from db import get_async_session
-from categories.utils import (is_exist_code_or_name,
-                              is_exist_code_or_name_update,
-                              get_object_or_404, is_superuser)
 from users.models import Users
 from users.config import current_superuser
 
@@ -52,8 +50,8 @@ async def create_category(
         session: AsyncSession = Depends(get_async_session),
         user: Users = Depends(current_superuser),
 ):
-    await is_superuser(user)
-    await is_exist_code_or_name(
+    await category_validator.is_superuser(user)
+    await category_validator.is_exist_code_or_name(
         category_data.code,
         category_data.title,
         session,
@@ -74,9 +72,9 @@ async def update_category(
         session: AsyncSession = Depends(get_async_session),
         user: Users = Depends(current_superuser),
 ):
-    await is_superuser(user)
-    db_category = await get_object_or_404(category_id, session,)
-    await is_exist_code_or_name_update(
+    await category_validator.is_superuser(user)
+    db_category = await category_validator.get_object_or_404(category_id, session,)
+    await category_validator.is_exist_code_or_name_update(
         category_id,
         categories_in.code,
         categories_in.title,
@@ -101,7 +99,7 @@ async def delete_category(
     session: AsyncSession = Depends(get_async_session),
     user: Users = Depends(current_superuser),
 ):
-    await is_superuser(user)
-    obj = await get_object_or_404(category_id, session)
+    await category_validator.is_superuser(user)
+    obj = await category_validator.get_object_or_404(category_id, session)
     rm_obj = await category_crud.remove(obj, session)
     return rm_obj

@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db import get_async_session
 from product.shemas import ProductDB, ProductCreate, ProductUpdate
 from product.crud import product_crud
+from users.models import Users
+from users.config import current_superuser
 
 
 product_router = APIRouter()
@@ -44,10 +46,10 @@ async def get_product_all(
 )
 async def product_create(
         obj_in: ProductCreate,
+        user: Users = Depends(current_superuser),
         session: AsyncSession = Depends(get_async_session)
 ):
     product = await product_crud.create_list_category(obj_in, session)
-    print(product)
     return product
 
 
@@ -58,11 +60,18 @@ async def product_create(
     description='Изменение продукта',
 )
 async def product_update(
-        obj_in: ProductUpdate,
-        session: AsyncSession = Depends(get_async_session)
+    product_id: int,
+    obj_in: ProductUpdate,
+    user: Users = Depends(current_superuser),
+    session: AsyncSession = Depends(get_async_session)
 ):
-    # obj_db = await product_crud.
-    pass
+    obj_db = await product_crud.get_product(product_id, session)
+    res = await product_crud.update_product(
+        obj_in,
+        obj_db,
+        session
+    )
+    return res
 
 @product_router.delete(
     '/{product_id}',
@@ -71,6 +80,8 @@ async def product_update(
     description='Удаление продукта',
 )
 async def product_remove(
-        session: AsyncSession = Depends(get_async_session)
+    product_id: int,
+    user: Users = Depends(current_superuser),
+    session: AsyncSession = Depends(get_async_session)
 ):
     pass

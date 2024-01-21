@@ -69,3 +69,5 @@ class CRUDBase:
         await session.delete(obj_db)
         await session.commit()
         return obj_db
+
+
