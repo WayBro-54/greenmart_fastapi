@@ -16,7 +16,7 @@ category_router = APIRouter()
     '/{category_id}',
     response_model=CategoryDB,
     response_model_exclude_none=True,
-    description='Получение данных о категории'
+    description='get category'
 )
 async def get_category(
     category_id: int,
@@ -30,7 +30,7 @@ async def get_category(
     '/',
     response_model=list[CategoryDB],
     response_model_exclude_none=True,
-    description='Получение данных о всех категориях',
+    description='Get data list category',
 )
 async def get_all_category(
         session: AsyncSession = Depends(get_async_session)
@@ -43,7 +43,7 @@ async def get_all_category(
     '/',
     response_model=CategoryDB,
     response_model_exclude_none=True,
-    description='Создание новой категории',
+    description='create a new category',
 )
 async def create_category(
         category_data: CategoryCreate,
@@ -64,7 +64,7 @@ async def create_category(
     '/{category_id}/update',
     response_model=CategoryDB,
     response_model_exclude_none=True,
-    description='Обновление данных категории',
+    description='Update category',
 )
 async def update_category(
         category_id: int,
@@ -92,7 +92,7 @@ async def update_category(
     '{id_category}/delete',
     response_model=CategoryDB,
     response_model_exclude_none=True,
-    description='Удаление категории',
+    description='Delete category',
 )
 async def delete_category(
     category_id,

@@ -55,21 +55,6 @@ class CategoryValidator(BaseValidation):
                 detail=f'Категория с именем: [{title}], уже присутствует!'
             )
 
-    async def get_object_or_404(
-            self,
-            id_categories: int,
-            session: AsyncSession
-    ):
-        is_exist_db = await self.crud.get(
-            id_categories,
-            session,
-        )
-        if is_exist_db is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f'Записи с ID={id_categories}, не обнаружено!'
-            )
-        return is_exist_db
 
 
 category_validator = CategoryValidator(Categories, category_crud)
